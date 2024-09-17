@@ -7,6 +7,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Lobby from './components/Lobby';
 import SocketProvider from "./context/SocketProvider";
 import Room from './components/Room';
+import Signup from './components/auth/Signup';
+import Signin from './components/auth/Signin';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
         path: "/room/:roomId",
         element: <Room />
       },
+      {
+        path: "/signup",
+        element: <Signup />
+      },
+      {
+        path: "/signin",
+        element: <Signin />
+      }
     ]
   }
 ]);
