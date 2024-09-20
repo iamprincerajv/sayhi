@@ -1,11 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useSocket } from "../../context/SocketProvider";
 
 const Signup = () => {
   const { register, handleSubmit } = useForm();
+  const socket = useSocket();
+
   const onSubmit = (data) => {
     console.log(data);
+    socket.emit("signup", data);
   };
 
   return (
