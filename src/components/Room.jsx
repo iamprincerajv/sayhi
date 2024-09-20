@@ -9,21 +9,22 @@ const Room = () => {
   const [mystream, setMyStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
 
-  const handleUserJoined = useCallback(({ email, id }) => {
-    console.log(email);
-    setRemoteSocketId(id);
-  }, []);
-
-  const handleCallUser = useCallback(async () => {
+  const handleCallUser = useCallback(async (id) => {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
       video: true,
     });
 
     const offer = await peer.getOffer();
-    socket.emit("user:call", { to: remoteSocketId, offer });
+    socket.emit("user:call", { to: id, offer });
     setMyStream(stream);
-  }, [remoteSocketId, socket]);
+  }, [socket]);
+
+  const handleUserJoined = useCallback(({ email, id }) => {
+    console.log(email);
+    setRemoteSocketId(id);
+    handleCallUser(id);
+  }, [handleCallUser]);
 
   const handleIncomingCall = useCallback(
     async ({ from, offer }) => {
@@ -70,9 +71,10 @@ const Room = () => {
   const handleNegoNeedIncoming = useCallback(async ({ from, offer }) => {
     const ans = await peer.getAnswer(offer);
     socket.emit("peer:nego:done", { to: from, ans });
+    // sendStream();
   }, [socket]);
 
-  const handleNegoNeedFinal = useCallback(async ({ ans }) => {
+  const handleNegoNeedFinal = useCallback(async ({from, ans }) => {
     await peer.setLocalDescription(ans);
   }, [])
 

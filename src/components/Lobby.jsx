@@ -46,6 +46,7 @@ const Lobby = () => {
           <div>
             <form onSubmit={handleSubmitForm}>
               <input
+                autoFocus
                 value={room}
                 onChange={(e) => setRoom(e.target.value)}
                 className="py-2 px-3 mr-5 border-2 border-blue-400 focus:border-blue-700 outline-none rounded-md"
