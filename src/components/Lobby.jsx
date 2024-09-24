@@ -32,7 +32,7 @@ const Lobby = () => {
   return (
     <div className="lg:flex justify-center items-center h-full">
       <div className="lg:w-2/3 xl:w-1/2 h-full flex flex-col justify-center px-5 md:px-16">
-        <div className="font-semibold text-5xl mb-5 text-pretty">
+        <div className="font-semibold text-4xl sm:text-5xl mb-5 text-pretty">
           Video calls and meetings for everyone
         </div>
         <div className="text-xl mb-8 text-pretty">

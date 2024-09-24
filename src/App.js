@@ -1,14 +1,17 @@
-import './App.css';
+import "./App.css";
 import { Outlet } from "react-router-dom";
-import Navbar from './components/Navbar';
+import Navbar from "./components/Navbar";
+import { useLocation } from "react-router-dom";
 
 function App() {
+  const locatioin = useLocation();
+  console.log(locatioin.pathname);
   return (
-    <div className='h-screen'>
-    <Navbar />
-    <main className='h-full'>
-      <Outlet />
-    </main>
+    <div className="h-screen">
+      {!locatioin.pathname.startsWith("/room") && <Navbar />}
+      <main className="h-full">
+        <Outlet />
+      </main>
     </div>
   );
 }

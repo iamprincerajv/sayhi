@@ -13,7 +13,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="h-full w-full flex justify-center items-center bg-blue-500">
+    <div className="h-full w-full flex justify-center items-center">
       <div className="h-4/6 w-1/5 bg-blue-700 rounded-s-lg"></div>
       <div className="h-4/6 w-2/5 flex flex-col items-center bg-white p-5 rounded-e-lg">
         <h1 className="text-2xl font-bold text-center">Sign Up</h1>
