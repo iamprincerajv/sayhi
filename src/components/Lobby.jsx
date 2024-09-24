@@ -9,6 +9,11 @@ const Lobby = () => {
   const socket = useSocket();
   const navigate = useNavigate();
 
+  const handleNewMeeting = useCallback(() => {
+    const roomId = Math.random().toString(36).substring(7);
+    socket.emit("room:join", { room: roomId });
+  }, [socket]);
+
   const handleSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
@@ -20,7 +25,7 @@ const Lobby = () => {
   const handleJoinRoom = useCallback((data) => {
     const { room } = data;
     navigate(`/room/${room}`);
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     socket.on("room:join", handleJoinRoom);
@@ -40,7 +45,7 @@ const Lobby = () => {
           anywhere in the world within seconds.
         </div>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center w-fit">
-          <button className="bg-blue-700 text-white rounded-md py-2 px-4 mb-5 sm:mb-0 sm:mr-2 w-32 sm:min-w-32">
+          <button onClick={handleNewMeeting} className="bg-blue-700 text-white rounded-md py-2 px-4 mb-5 sm:mb-0 sm:mr-2 w-32 sm:min-w-32">
             New Meeting
           </button>
           <div>
@@ -54,6 +59,7 @@ const Lobby = () => {
                 placeholder="Enter a code or link"
               />
               <button
+                disabled={!room}
                 type="submit"
                 className="bg-white text-blue-700 py-2 px-3 rounded-md min-w-14"
               >
