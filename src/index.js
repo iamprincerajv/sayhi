@@ -1,15 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Lobby from './components/Lobby';
+import Lobby from "./components/Lobby";
 import SocketProvider from "./context/SocketProvider";
-import Room from './components/Room';
-import Signup from './components/auth/Signup';
-import Signin from './components/auth/Signin';
-import VerifyEmail from './components/auth/VerifyEmail';
+import Room from "./components/Room";
+import Signup from "./components/auth/Signup";
+import Signin from "./components/auth/Signin";
+import VerifyEmail from "./components/auth/VerifyEmail";
+import AuthWrapper from "./components/AuthWrapper";
 
 const router = createBrowserRouter([
   {
@@ -22,29 +23,45 @@ const router = createBrowserRouter([
       },
       {
         path: "/room/:roomId",
-        element: <Room />
+        element: (
+          <AuthWrapper authentication={true}>
+            <Room />
+          </AuthWrapper>
+        ),
       },
       {
         path: "/signup",
-        element: <Signup />
+        element: (
+          <AuthWrapper>
+            <Signup />
+          </AuthWrapper>
+        ),
       },
       {
         path: "/signin",
-        element: <Signin />
+        element: (
+          <AuthWrapper>
+            <Signin />
+          </AuthWrapper>
+        ),
       },
       {
         path: "/verify",
-        element: <VerifyEmail />
-      }
-    ]
-  }
+        element: (
+          <AuthWrapper>
+            <VerifyEmail />
+          </AuthWrapper>
+        ),
+      },
+    ],
+  },
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <SocketProvider>
-    <RouterProvider router={router} />
+      <RouterProvider router={router} />
     </SocketProvider>
   </React.StrictMode>
 );

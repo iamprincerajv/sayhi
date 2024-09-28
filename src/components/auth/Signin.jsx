@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSocket } from "../../context/SocketProvider";
 
 const Signin = () => {
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const socket = useSocket();
 
   const handleShowPassword = (e) => {
     const password = document.querySelector('input[name="password"]');
@@ -14,18 +17,41 @@ const Signin = () => {
     }
   };
 
-  const onSubmit = (data) => {
+  const handleSignInDone = useCallback((data) => {
     console.log(data);
-  };
+    localStorage.setItem("user", JSON.stringify(data));
+    navigate("/");
+    window.location.reload();
+  }
+  , [navigate]);
+
+  const handleSignInFailed = useCallback((data) => {
+    console.log(data);
+    alert(data.message);
+  }, []);
+
+  const onSubmit = useCallback((data) => {
+    console.log(data);
+    socket.emit("signin", data);
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("signin:done", handleSignInDone);
+    socket.on("signin:failed", handleSignInFailed);
+    return () => {
+      socket.off("signin:done", handleSignInDone);
+      socket.off("signin:failed", handleSignInFailed);
+    };
+  }, [socket, handleSignInDone, handleSignInFailed]);
 
   return (
     <div className="h-full w-full flex justify-center items-center bg-gradient-to-r from-red-300 via-purple-700 to-blue-300">
-      <div className="h-4/6 w-1/5 bg-blue-700 rounded-s-lg"></div>
-      <div className="h-4/6 w-2/5 flex flex-col items-center bg-white p-5 rounded-e-lg">
+      <div className="hidden lg:block h-4/6 w-1/5 bg-blue-700 rounded-s-lg"></div>
+      <div className="h-4/6 w-11/12 sm:w-5/6 md:w-4/6 lg:w-3/6 xl:w-2/5 flex flex-col items-center bg-white py-5 sm:p-5 rounded-s-lg lg:rounded-s-none rounded-e-lg">
         <h1 className="text-2xl font-bold text-center">Sign in</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col w-4/5 p-5 my-6"
+          className="flex flex-col w-full sm:w-4/5 p-5 my-6"
         >
           <label htmlFor="email" className="ms-2 mb-1">
             Email Address
