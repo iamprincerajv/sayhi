@@ -1,19 +1,49 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSocket } from "../../context/SocketProvider";
 
 const Signup = () => {
   const { register, handleSubmit } = useForm();
   const socket = useSocket();
+  const navigate = useNavigate();
+
+  const handleShowPassword = (e) => {
+    const password = document.querySelector('input[name="password"]');
+    if (e.target.checked) {
+      password.type = "text";
+    } else {
+      password.type = "password";
+    }
+  };
 
   const onSubmit = (data) => {
     console.log(data);
     socket.emit("signup", data);
   };
 
+  const handleSignupDone = useCallback((data) => {
+    console.log("signup done", data);
+    navigate(`/verify?email=${data.email}`);
+  }, [navigate]);
+
+  const handleSignupError = useCallback((data) => {
+    console.log("signup error", data);
+    alert(data.error);
+  }, []);
+
+  useEffect(() => {
+    socket.on("signup:done", handleSignupDone);
+    socket.on("signup:error", handleSignupError);
+
+    return () => {
+      socket.off("signup:done", handleSignupDone);
+      socket.off("signup:error", handleSignupError);
+    }
+  }, [socket, handleSignupDone, handleSignupError]);
+
   return (
-    <div className="h-full w-full flex justify-center items-center">
+    <div className="h-full w-full flex justify-center items-center bg-gradient-to-r from-red-300 via-purple-700 to-blue-300">
       <div className="h-4/6 w-1/5 bg-blue-700 rounded-s-lg"></div>
       <div className="h-4/6 w-2/5 flex flex-col items-center bg-white p-5 rounded-e-lg">
         <h1 className="text-2xl font-bold text-center">Sign Up</h1>
@@ -21,6 +51,16 @@ const Signup = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col w-4/5 p-5 my-6"
         >
+          <label htmlFor="name" className="ms-2 mb-1">
+            Name
+          </label>
+          <input
+            type="text"
+            name="name"
+            {...register("name", { required: true })}
+            placeholder="Your Name"
+            className="focus:border focus:bottom-3 focus:border-blue-700 p-2 rounded-lg outline-none mb-3"
+          />
           <label htmlFor="email" className="ms-2 mb-1">
             Email Address
           </label>
@@ -43,7 +83,7 @@ const Signup = () => {
           />
           <div className="flex justify-between items-center">
             <div className="flex items-center text-sm">
-              <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-700 me-2" />
+              <input onClick={handleShowPassword} type="checkbox" className="form-checkbox h-5 w-5 text-blue-700 me-2 cursor-pointer" />
               <span>Show Password</span>
             </div>
             <button

@@ -16,9 +16,9 @@ const Navbar = () => {
     setUser(user);
   }, []);
   return (
-    <nav className='h-14 w-full fixed top-0 flex justify-between items-center'>
-      <div className='font-bold tracking-tighter bg-gradient-to-r from-blue-700 via-purple-700 to-red-300 text-transparent bg-clip-text text-3xl ms-24'>SayHi</div>
-      <div className='flex items-center justify-between w-full max-w-64'>
+    <nav className='h-14 w-full fixed top-0 flex justify-between items-center bg-white'>
+      <div onClick={() => navigate("/")} className='font-bold tracking-tighter bg-gradient-to-r from-blue-700 via-purple-700 to-red-300 text-transparent bg-clip-text text-3xl ms-24 cursor-pointer'>SayHi</div>
+      <div className='flex items-center justify-evenly w-full max-w-64'>
         <div>{user ? (
           <div className='font-semibold'>{user.name}</div>
         ) : "Not Signed in"}</div>

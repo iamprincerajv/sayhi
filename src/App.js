@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 
 function App() {
   const locatioin = useLocation();
-  console.log(locatioin.pathname);
+  
   return (
     <div className="h-screen">
       {!locatioin.pathname.startsWith("/room") && <Navbar />}

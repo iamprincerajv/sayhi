@@ -4,12 +4,22 @@ import { Link } from "react-router-dom";
 
 const Signin = () => {
   const { register, handleSubmit } = useForm();
+
+  const handleShowPassword = (e) => {
+    const password = document.querySelector('input[name="password"]');
+    if (e.target.checked) {
+      password.type = "text";
+    } else {
+      password.type = "password";
+    }
+  };
+
   const onSubmit = (data) => {
     console.log(data);
   };
 
   return (
-    <div className="h-full w-full flex justify-center items-center">
+    <div className="h-full w-full flex justify-center items-center bg-gradient-to-r from-red-300 via-purple-700 to-blue-300">
       <div className="h-4/6 w-1/5 bg-blue-700 rounded-s-lg"></div>
       <div className="h-4/6 w-2/5 flex flex-col items-center bg-white p-5 rounded-e-lg">
         <h1 className="text-2xl font-bold text-center">Sign in</h1>
@@ -40,8 +50,9 @@ const Signin = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center text-sm">
               <input
+                onClick={handleShowPassword}
                 type="checkbox"
-                className="form-checkbox h-5 w-5 text-blue-700 me-2"
+                className="form-checkbox h-5 w-5 text-blue-700 me-2 cursor-pointer"
               />
               <span>Show Password</span>
             </div>

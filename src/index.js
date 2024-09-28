@@ -9,6 +9,7 @@ import SocketProvider from "./context/SocketProvider";
 import Room from './components/Room';
 import Signup from './components/auth/Signup';
 import Signin from './components/auth/Signin';
+import VerifyEmail from './components/auth/VerifyEmail';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/signin",
         element: <Signin />
+      },
+      {
+        path: "/verify",
+        element: <VerifyEmail />
       }
     ]
   }
