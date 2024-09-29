@@ -156,7 +156,7 @@ const Room = () => {
   ]);
 
   return (
-    <div className="h-full bg-black relative">
+    <div className="h-full overflow-hidden bg-black relative">
       <div
         className={`${
           remoteStream
@@ -167,7 +167,6 @@ const Room = () => {
         {mystream && (
           <ReactPlayer
             playing
-            muted
             url={mystream}
             width="100%"
             height="100%"
@@ -178,8 +177,6 @@ const Room = () => {
         {remoteStream && (
           <ReactPlayer
             playing
-            loop
-            muted
             url={remoteStream}
             width="100%"
             height="100%"
