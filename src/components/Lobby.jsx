@@ -19,7 +19,15 @@ const Lobby = () => {
   const handleSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
-      socket.emit("room:join", { room });
+
+      if (room) {
+        if (room.startsWith("http")) {
+          const roomId = room.split("/").pop();
+          socket.emit("room:join", { room: roomId });
+        } else {
+          socket.emit("room:join", { room });
+        }
+      }
     },
     [room, socket]
   );
