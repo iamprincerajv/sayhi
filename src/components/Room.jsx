@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../context/SocketProvider";
 import ReactPlayer from "react-player";
 import peer from "../service/peer";
+import { useNavigate } from "react-router-dom";
 
 const Room = () => {
   const socket = useSocket();
@@ -11,6 +12,8 @@ const Room = () => {
   const [isCallAccepted, setIsCallAccepted] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(true);
   const [isMicOn, setIsMicOn] = useState(true);
+
+  const navigate = useNavigate();
 
   const handleCallUser = useCallback(
     async (id) => {
@@ -124,6 +127,21 @@ const Room = () => {
     }
   };
 
+  // DISCONNECT FROM CALL
+  const handleDisconnect = useCallback(() => {
+    if (mystream) {
+      mystream.getTracks().forEach((track) => track.stop());
+      setMyStream(null);
+      setRemoteStream(null);
+      setIsCallAccepted(false);
+      setIsCameraOn(true);
+      setIsMicOn(true);
+      socket.emit("user:disconnect", { to: remoteSocketId });
+      navigate("/");
+      window.location.reload();
+    }
+  }, [mystream, navigate, remoteSocketId, socket]);
+
   useEffect(() => {
     peer.peer.addEventListener("track", async (ev) => {
       console.log("got tracks");
@@ -138,6 +156,7 @@ const Room = () => {
     socket.on("call:accepted", handleCallAccepted);
     socket.on("peer:nego:needed", handleNegoNeedIncoming);
     socket.on("peer:nego:final", handleNegoNeedFinal);
+    socket.on("user:disconnect", handleDisconnect);
 
     return () => {
       socket.off("user:joined", handleUserJoined);
@@ -145,6 +164,7 @@ const Room = () => {
       socket.off("call:accepted", handleCallAccepted);
       socket.off("peer:nego:needed", handleNegoNeedIncoming);
       socket.off("peer:nego:final", handleNegoNeedFinal);
+      socket.off("user:disconnect", handleDisconnect);
     };
   }, [
     socket,
@@ -153,6 +173,7 @@ const Room = () => {
     handleCallAccepted,
     handleNegoNeedIncoming,
     handleNegoNeedFinal,
+    handleDisconnect,
   ]);
 
   return (
@@ -215,14 +236,14 @@ const Room = () => {
           <div className="absolute left-[5%] bottom-[5%] xl:left-1/2 xl:bottom-5 xl:-translate-x-1/2 xl:-translate-y-1/2 sm:w-full sm:max-w-60 h-full max-h-48 sm:h-auto flex flex-col sm:flex-row justify-evenly items-center rounded-lg">
             <button
               onClick={handleCamera}
-              className="bg-blue-500 rounded-full flex justify-center items-center aspect-square w-12"
+              className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-12"
             >
               <img src={`${isCameraOn ? "/videoon.png" : "/videooff.png"}`} alt="video" className="w-8" />
             </button>
-            <button onClick={handleMic} className="bg-blue-500 rounded-full flex justify-center items-center aspect-square w-12">
+            <button onClick={handleMic} className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-12">
               <img src={`${isMicOn ? "/audioon.png" : "/audiooff.png"}`} alt="mic" className="w-8" />
             </button>
-            <button className="bg-red-500 rounded-full flex justify-center items-center aspect-square w-12">
+            <button onClick={handleDisconnect} className="bg-red-500 rounded-full flex justify-center items-center aspect-square w-12">
               <img src="/disconnect.png" alt="disconnect" className="w-8" />
             </button>
           </div>
