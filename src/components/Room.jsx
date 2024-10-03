@@ -181,7 +181,7 @@ const Room = () => {
       <div
         className={`${
           remoteStream
-            ? "w-fit h-fit max-w-40 sm:max-w-64 md:max-w-80 xl:max-w-96 absolute right-[3%] bottom-[5%] bg-black rounded-lg border-2 border-blue-500"
+            ? "w-fit h-fit max-w-40 sm:max-w-64 md:max-w-80 xl:max-w-96 absolute right-[3%] bottom-[3%] sm:bottom-[5%] bg-black rounded-lg border-2 border-blue-500"
             : "h-full w-full"
         }`}
       >
@@ -233,18 +233,18 @@ const Room = () => {
       </div>
       <div>
         {remoteStream && isCallAccepted && (
-          <div className="absolute left-[5%] bottom-[5%] xl:left-1/2 xl:bottom-5 xl:-translate-x-1/2 xl:-translate-y-1/2 sm:w-full sm:max-w-60 h-full max-h-48 sm:h-auto flex flex-col sm:flex-row justify-evenly items-center rounded-lg">
+          <div className="absolute left-[3%] sm:left-[5%] bottom-[3%] sm:bottom-[5%] xl:left-1/2 xl:bottom-5 xl:-translate-x-1/2 xl:-translate-y-1/2 sm:w-full sm:max-w-60 h-full max-h-48 sm:h-auto flex flex-col sm:flex-row justify-evenly items-center rounded-lg">
             <button
               onClick={handleCamera}
               className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
             >
-              <img src={`${isCameraOn ? "/videoon.png" : "/videooff.png"}`} alt="video" className="w-8" />
+              <img src={`${isCameraOn ? "/videoon.png" : "/videooff.png"}`} alt="video" className="w-6 sm:w-8" />
             </button>
             <button onClick={handleMic} className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12">
-              <img src={`${isMicOn ? "/audioon.png" : "/audiooff.png"}`} alt="mic" className="w-8" />
+              <img src={`${isMicOn ? "/audioon.png" : "/audiooff.png"}`} alt="mic" className="w-6 sm:w-8" />
             </button>
             <button onClick={handleDisconnect} className="bg-red-500 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12">
-              <img src="/disconnect.png" alt="disconnect" className="w-8" />
+              <img src="/disconnect.png" alt="disconnect" className="w-6 sm:w-8" />
             </button>
           </div>
         )}
