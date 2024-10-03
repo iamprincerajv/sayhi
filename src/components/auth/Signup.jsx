@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useSocket } from "../../context/SocketProvider";
+import Loading from "../Loading";
 
 const Signup = () => {
   const [loading, setLoading] = useState(false);
