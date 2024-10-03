@@ -1,9 +1,12 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useSocket } from "../../context/SocketProvider";
+import Loading from "../Loading";
 
 const Signin = () => {
+  const [loading, setLoading] = useState(false);
+
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const socket = useSocket();
@@ -20,6 +23,7 @@ const Signin = () => {
   const handleSignInDone = useCallback((data) => {
     console.log(data);
     localStorage.setItem("user", JSON.stringify(data));
+    setLoading(false);
     navigate("/");
     window.location.reload();
   }
@@ -27,11 +31,12 @@ const Signin = () => {
 
   const handleSignInFailed = useCallback((data) => {
     console.log(data);
+    setLoading(false);
     alert(data.message);
   }, []);
 
   const onSubmit = useCallback((data) => {
-    console.log(data);
+    setLoading(true);
     socket.emit("signin", data);
   }, [socket]);
 
@@ -59,7 +64,7 @@ const Signin = () => {
           <input
             type="email"
             name="email"
-            {...register("email", { required: true })}
+            {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
             placeholder="you@example.com"
             className="focus:border focus:bottom-3 focus:border-blue-700 p-2 rounded-lg outline-none mb-3"
           />
@@ -69,7 +74,7 @@ const Signin = () => {
           <input
             type="password"
             name="password"
-            {...register("password", { required: true })}
+            {...register("password", { required: true, minLength: 6 })}
             placeholder="********"
             className="focus:border focus:bottom-3 focus:border-blue-700 p-2 rounded-lg outline-none mb-3"
           />
@@ -83,8 +88,9 @@ const Signin = () => {
               <span>Show Password</span>
             </div>
             <button
+              disabled={loading}
               type="submit"
-              className="bg-blue-700 text-white p-2 font-bold rounded-lg w-1/2"
+              className={`${loading ? "bg-blue-500" : "bg-blue-700"} text-white p-2 font-bold rounded-lg w-1/2`}
             >
               Sign in
             </button>
@@ -97,6 +103,7 @@ const Signin = () => {
           </span>
         </form>
       </div>
+      {loading && <Loading />}
     </div>
   );
 };

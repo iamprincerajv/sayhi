@@ -10,10 +10,12 @@ const Navbar = () => {
     localStorage.removeItem("user");
     setUser(null);
     navigate("/signin");
+    setShowMenu(false);
   };
 
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
+    setShowMenu(false);
   }, []);
 
   return (
@@ -50,7 +52,10 @@ const Navbar = () => {
           )}
         </div>
       </div>
-      <div onClick={() => setShowMenu(!showMenu)} className="sm:hidden w-8 mr-2 cursor-pointer">
+      <div
+        onClick={() => setShowMenu(!showMenu)}
+        className="sm:hidden w-8 mr-2 cursor-pointer"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6 mr-5"
@@ -66,7 +71,11 @@ const Navbar = () => {
           />
         </svg>
       </div>
-      <div className={`sm:hidden fixed right-14 top-1 ${showMenu ? "flex" : "hidden"} justify-evenly items-center w-10/12 max-w-64 h-12 rounded-md bg-blue-100`}>
+      <div
+        className={`sm:hidden fixed right-14 top-1 ${
+          showMenu ? "flex" : "hidden"
+        } justify-evenly items-center w-10/12 max-w-64 h-12 rounded-md bg-blue-100`}
+      >
         <div>
           {user ? (
             <div className="font-semibold">{user.name}</div>
@@ -84,7 +93,10 @@ const Navbar = () => {
             </button>
           ) : (
             <button
-              onClick={() => navigate("/signin")}
+              onClick={() => {
+                navigate("/signin");
+                setShowMenu(false);
+              }}
               className="bg-blue-700 text-white px-4 py-2 rounded-md sm:mr-3 md:mr-10"
             >
               Sign in

@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useSocket } from "../../context/SocketProvider";
 
 const Signup = () => {
+  const [loading, setLoading] = useState(false);
+
   const { register, handleSubmit } = useForm();
   const socket = useSocket();
   const navigate = useNavigate();
@@ -18,16 +20,18 @@ const Signup = () => {
   };
 
   const onSubmit = (data) => {
-    console.log(data);
+    setLoading(true);
     socket.emit("signup", data);
   };
 
   const handleSignupDone = useCallback((data) => {
+    setLoading(false);
     console.log("signup done", data);
     navigate(`/verify?email=${data.email}`);
   }, [navigate]);
 
   const handleSignupError = useCallback((data) => {
+    setLoading(false);
     console.log("signup error", data);
     alert(data.error);
   }, []);
@@ -57,7 +61,7 @@ const Signup = () => {
           <input
             type="text"
             name="name"
-            {...register("name", { required: true })}
+            {...register("name", { required: true, minLength: 3 })}
             placeholder="Your Name"
             className="focus:border focus:bottom-3 focus:border-blue-700 p-2 rounded-lg outline-none mb-3"
           />
@@ -67,7 +71,7 @@ const Signup = () => {
           <input
             type="email"
             name="email"
-            {...register("email", { required: true })}
+            {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
             placeholder="you@example.com"
             className="focus:border focus:bottom-3 focus:border-blue-700 p-2 rounded-lg outline-none mb-3"
           />
@@ -77,7 +81,7 @@ const Signup = () => {
           <input
             type="password"
             name="password"
-            {...register("password", { required: true })}
+            {...register("password", { required: true, minLength: 6 })}
             placeholder="********"
             className="focus:border focus:bottom-3 focus:border-blue-700 p-2 rounded-lg outline-none mb-3"
           />
@@ -87,8 +91,9 @@ const Signup = () => {
               <span>Show Password</span>
             </div>
             <button
+              disabled={loading}
               type="submit"
-              className="bg-blue-700 text-white p-2 font-bold rounded-lg w-1/2"
+              className={`${loading ? "bg-blue-500" : "bg-blue-700"} text-white p-2 font-bold rounded-lg w-1/2`}
             >
               Sign Up
             </button>
@@ -96,6 +101,7 @@ const Signup = () => {
           <span className="text-center mt-3">Already have an account? <Link to="/signin" className="text-blue-700">Sign in</Link> </span>
         </form>
       </div>
+      {loading && <Loading />}
     </div>
   );
 };
