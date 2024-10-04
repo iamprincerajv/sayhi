@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../context/SocketProvider";
 import { useNavigate } from "react-router-dom";
+import Loading from "./Loading";
 
 const Lobby = () => {
   // const [email, setEmail] = useState("");
   const [room, setRoom] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -12,6 +14,7 @@ const Lobby = () => {
   const navigate = useNavigate();
 
   const handleNewMeeting = useCallback(() => {
+    setLoading(true);
     const roomId = Math.random().toString(36).substring(7);
     socket.emit("room:join", { room: roomId });
   }, [socket]);
@@ -19,6 +22,7 @@ const Lobby = () => {
   const handleSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
+      setLoading(true);
 
       if (room) {
         if (room.startsWith("http")) {
@@ -35,6 +39,7 @@ const Lobby = () => {
   const handleJoinRoom = useCallback(
     (data) => {
       const { room } = data;
+      setLoading(false);
       navigate(`/room/${room}`);
     },
     [navigate]
@@ -112,6 +117,7 @@ const Lobby = () => {
           Create a new meeting or join an existing one with a code or link.
         </div>
       </div>
+      {loading && <Loading />}
     </div>
   );
 };
