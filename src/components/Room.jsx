@@ -19,7 +19,9 @@ const Room = () => {
     async (id) => {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: true,
+        audio: {
+          echoCancellation: true,
+        },
       });
 
       const offer = await peer.getOffer();
@@ -43,7 +45,9 @@ const Room = () => {
       setRemoteSocketId(from);
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: true,
+        audio: {
+          echoCancellation: true,
+        },
       });
       setMyStream(stream);
       console.log(from, offer);
@@ -186,22 +190,12 @@ const Room = () => {
         }`}
       >
         {mystream && (
-          <ReactPlayer
-            playing
-            url={mystream}
-            width="100%"
-            height="100%"
-          />
+          <ReactPlayer playing url={mystream} width="100%" height="100%" />
         )}
       </div>
       <div className="h-full w-full ">
         {remoteStream && (
-          <ReactPlayer
-            playing
-            url={remoteStream}
-            width="100%"
-            height="100%"
-          />
+          <ReactPlayer playing url={remoteStream} width="100%" height="100%" />
         )}
       </div>
       <div>
@@ -238,13 +232,31 @@ const Room = () => {
               onClick={handleCamera}
               className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
             >
-              <img src={`${isCameraOn ? "/videoon.png" : "/videooff.png"}`} alt="video" className="w-6 sm:w-8" />
+              <img
+                src={`${isCameraOn ? "/videoon.png" : "/videooff.png"}`}
+                alt="video"
+                className="w-6 sm:w-8"
+              />
             </button>
-            <button onClick={handleMic} className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12">
-              <img src={`${isMicOn ? "/audioon.png" : "/audiooff.png"}`} alt="mic" className="w-6 sm:w-8" />
+            <button
+              onClick={handleMic}
+              className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
+            >
+              <img
+                src={`${isMicOn ? "/audioon.png" : "/audiooff.png"}`}
+                alt="mic"
+                className="w-6 sm:w-8"
+              />
             </button>
-            <button onClick={handleDisconnect} className="bg-red-500 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12">
-              <img src="/disconnect.png" alt="disconnect" className="w-6 sm:w-8" />
+            <button
+              onClick={handleDisconnect}
+              className="bg-red-500 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
+            >
+              <img
+                src="/disconnect.png"
+                alt="disconnect"
+                className="w-6 sm:w-8"
+              />
             </button>
           </div>
         )}
