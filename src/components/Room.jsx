@@ -146,6 +146,20 @@ const Room = () => {
     }
   }, [mystream, navigate, remoteSocketId, socket]);
 
+  // SHARE MEETING LINK
+  const handleShareLink = useCallback(async () => {
+    try {
+      const roomId = window.location.pathname.split("/").pop();
+      await navigator.share({
+        title: "Meeting Link",
+        text: `Your Meeting Code: ${roomId}`,
+        url: "",
+      })
+    } catch (error) {
+      alert("Error sharing meeting link");
+    }
+  }, []);
+
   useEffect(() => {
     peer.peer.addEventListener("track", async (ev) => {
       console.log("got tracks");
@@ -228,6 +242,9 @@ const Room = () => {
       <div>
         {remoteStream && isCallAccepted && (
           <div className="absolute left-[3%] sm:left-[5%] bottom-[3%] sm:bottom-[5%] xl:left-1/2 xl:bottom-5 xl:-translate-x-1/2 xl:-translate-y-1/2 sm:w-full sm:max-w-60 h-full max-h-48 sm:h-auto flex flex-col sm:flex-row justify-evenly items-center rounded-lg">
+            <button onClick={handleShareLink} className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12" >
+              <img src="/share.svg" alt="share" className="w-6 sm:w-8" />
+            </button>
             <button
               onClick={handleCamera}
               className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
