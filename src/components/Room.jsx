@@ -153,7 +153,7 @@ const Room = () => {
       await navigator.share({
         title: "Meeting Link",
         text: `Your Meeting Code: ${roomId}`,
-        url: "",
+        url: "https://sayyhii.netlify.app/",
       });
     } catch (error) {
       alert("Error sharing meeting link");

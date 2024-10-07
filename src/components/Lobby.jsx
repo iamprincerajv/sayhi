@@ -16,20 +16,23 @@ const Lobby = () => {
   const handleNewMeeting = useCallback(() => {
     setLoading(true);
     const roomId = Math.random().toString(36).substring(7);
-    socket.emit("room:join", { room: roomId });
+    const email = JSON.parse(localStorage.getItem("user")).email;
+
+    socket.emit("room:join", { room: roomId, email });
   }, [socket]);
 
   const handleSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
       setLoading(true);
+      const email = JSON.parse(localStorage.getItem("user")).email;
 
       if (room) {
         if (room.startsWith("http")) {
           const roomId = room.split("/").pop();
-          socket.emit("room:join", { room: roomId });
+          socket.emit("room:join", { room: roomId, email });
         } else {
-          socket.emit("room:join", { room });
+          socket.emit("room:join", { room, email });
         }
       }
     },
@@ -45,12 +48,19 @@ const Lobby = () => {
     [navigate]
   );
 
+  const handleRoomJoinFailed = useCallback((data) => {
+    setLoading(false);
+    alert(data.message);
+  }, []);
+
   useEffect(() => {
     socket.on("room:join", handleJoinRoom);
+    socket.on("room:join:failed", handleRoomJoinFailed);
     return () => {
       socket.off("room:join", handleJoinRoom);
+      socket.off("room:join:failed", handleRoomJoinFailed);
     };
-  }, [socket, handleJoinRoom]);
+  }, [socket, handleJoinRoom, handleRoomJoinFailed]);
 
   return (
     <div className="lg:flex justify-center items-center h-full">
