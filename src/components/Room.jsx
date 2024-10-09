@@ -12,6 +12,7 @@ const Room = () => {
   const [isCallAccepted, setIsCallAccepted] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(true);
   const [isMicOn, setIsMicOn] = useState(true);
+  const [showCallOptions, setShowCallOptions] = useState(true);
 
   const navigate = useNavigate();
 
@@ -151,13 +152,22 @@ const Room = () => {
     try {
       const roomId = window.location.pathname.split("/").pop();
       await navigator.share({
-        title: "Meeting Link",
-        text: `Your Meeting Code: ${roomId}`,
-        url: "https://sayyhii.netlify.app/",
+        title: "Meeting Details",
+        text: `Your Meeting Code: ${roomId}. Open this link and click join.`,
+        url: `https://sayyhii.netlify.app/?roomId=${roomId}`,
       });
     } catch (error) {
       alert("Error sharing meeting link");
     }
+  }, []);
+
+  // CALL OPTIONS HANDLERS
+  const handleHideCallOptions = useCallback(() => {
+    setShowCallOptions(false);
+  }, []);
+
+  const handleShowCallOptions = useCallback(() => {
+    setShowCallOptions(true);
   }, []);
 
   useEffect(() => {
@@ -194,12 +204,29 @@ const Room = () => {
     handleDisconnect,
   ]);
 
+  useEffect(() => {
+    let callOptionsInterval;
+    if(showCallOptions && mystream) {
+      callOptionsInterval = setInterval(() => {
+        handleHideCallOptions();
+      }, 7000);
+    }
+    return () => {
+      if(callOptionsInterval) {
+        clearInterval(callOptionsInterval);
+      }
+    }
+  }, [handleHideCallOptions, showCallOptions, mystream]);
+
   return (
-    <div className="h-full overflow-hidden bg-black relative">
+    <div
+      className="h-full overflow-hidden bg-black relative"
+      onClick={handleShowCallOptions}
+    >
       <div
         className={`${
           remoteStream
-            ? "w-fit h-fit max-w-40 sm:max-w-64 md:max-w-80 xl:max-w-96 absolute right-[3%] bottom-[3%] sm:bottom-[5%] bg-black rounded-lg border-2 border-blue-500"
+            ? "w-fit h-fit max-w-32 sm:max-w-56 md:max-w-72 xl:max-w-80 absolute right-[2%] bottom-[2%] sm:right-[3%] sm:bottom-[3%] bg-black rounded-lg border-2 border-blue-500"
             : "h-full w-full"
         }`}
       >
@@ -240,46 +267,105 @@ const Room = () => {
         )}
       </div>
       <div>
-        <div className="absolute left-[3%] sm:left-[5%] bottom-[3%] sm:bottom-[5%] xl:left-1/2 xl:bottom-5 xl:-translate-x-1/2 xl:-translate-y-1/2 sm:w-full sm:max-w-60 h-full max-h-48 sm:h-auto flex flex-col sm:flex-row justify-evenly items-center rounded-lg">
-          <button
+        <div
+          className={`absolute transition-left transition-bottom duration-1000 ease-in-out ${
+            showCallOptions ? "left-[3%] sm:left-[5%] xl:bottom-5" : "left-[-50%] xl:bottom-[-50%]"
+          } bottom-[3%] sm:bottom-[5%] xl:left-1/2 xl:-translate-x-1/2 xl:-translate-y-1/2 sm:w-full sm:max-w-fit h-full max-h-fit sm:h-auto flex flex-col sm:flex-row justify-evenly items-center rounded-lg bg-gray-800 px-2`}
+        >
+          {!isCallAccepted && (
+            <button
+              onClick={handleShareLink}
+              className="rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
+            >
+              <img
+                src="/share.svg"
+                alt="share"
+                className="w-6 sm:w-7"
+                style={{
+                  filter:
+                    "invert(86%) sepia(100%) saturate(0%) hue-rotate(184deg) brightness(109%) contrast(97%)",
+                }}
+              />
+            </button>
+          )}
+
+          {remoteStream && isCallAccepted && (
+            <button
             onClick={handleShareLink}
-            className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
+            className="rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
           >
-            <img src="/share.svg" alt="share" className="w-6 sm:w-8" />
+            <img
+              src="/screen.svg"
+              alt="Share Screen"
+              className="w-6 sm:w-7"
+              style={{
+                filter:
+                  "invert(86%) sepia(100%) saturate(0%) hue-rotate(184deg) brightness(109%) contrast(97%)",
+              }}
+            />
           </button>
+          )}
+
           {mystream && (
             <>
               <button
+                onClick={handleShareLink}
+                className="rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
+              >
+                <img
+                  src="/camerarotate.svg"
+                  alt="Rotate Camera"
+                  className="w-6 sm:w-7"
+                  style={{
+                    filter:
+                      "invert(86%) sepia(100%) saturate(0%) hue-rotate(184deg) brightness(109%) contrast(97%)",
+                  }}
+                />
+              </button>
+              <button
                 onClick={handleCamera}
-                className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
+                className="rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
               >
                 <img
                   src={`${isCameraOn ? "/videoon.png" : "/videooff.png"}`}
                   alt="video"
-                  className="w-6 sm:w-8"
+                  className="w-6 sm:w-7"
+                  style={{
+                    filter:
+                      "invert(86%) sepia(100%) saturate(0%) hue-rotate(184deg) brightness(109%) contrast(97%)",
+                  }}
                 />
               </button>
               <button
                 onClick={handleMic}
-                className="bg-blue-300 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
+                className="rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
               >
                 <img
                   src={`${isMicOn ? "/audioon.png" : "/audiooff.png"}`}
                   alt="mic"
-                  className="w-6 sm:w-8"
+                  className="w-6 sm:w-7"
+                  style={{
+                    filter:
+                      "invert(86%) sepia(100%) saturate(0%) hue-rotate(184deg) brightness(109%) contrast(97%)",
+                  }}
                 />
               </button>{" "}
             </>
           )}
+      
           {remoteStream && isCallAccepted && (
             <button
               onClick={handleDisconnect}
-              className="bg-red-500 rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
+              className="bg-red-600 mb-2 sm:mb-0 sm:mr-2 rounded-full flex justify-center items-center aspect-square w-10"
             >
               <img
                 src="/disconnect.png"
                 alt="disconnect"
-                className="w-6 sm:w-8"
+                className="w-6"
+                style={{
+                  filter:
+                    "invert(86%) sepia(100%) saturate(0%) hue-rotate(184deg) brightness(109%) contrast(97%)",
+                }}
               />
             </button>
           )}

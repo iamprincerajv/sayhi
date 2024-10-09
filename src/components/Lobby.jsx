@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../context/SocketProvider";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
+import { useSearchParams } from "react-router-dom";
 
 const Lobby = () => {
-  // const [email, setEmail] = useState("");
   const [room, setRoom] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -12,20 +12,22 @@ const Lobby = () => {
 
   const socket = useSocket();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const handleNewMeeting = useCallback(() => {
     setLoading(true);
     const roomId = Math.random().toString(36).substring(7);
-    const email = JSON.parse(localStorage.getItem("user")).email;
+    const email = user.email;
 
     socket.emit("room:join", { room: roomId, email });
+    // eslint-disable-next-line
   }, [socket]);
 
   const handleSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
       setLoading(true);
-      const email = JSON.parse(localStorage.getItem("user")).email;
+      const email = user.email;
 
       if (room) {
         if (room.startsWith("http")) {
@@ -36,6 +38,7 @@ const Lobby = () => {
         }
       }
     },
+    // eslint-disable-next-line
     [room, socket]
   );
 
@@ -52,6 +55,18 @@ const Lobby = () => {
     setLoading(false);
     alert(data.message);
   }, []);
+
+  const handleSearchRoom = useCallback(() => {
+    const roomId = searchParams.get("roomId");
+
+    if (roomId) {
+      setRoom(roomId);
+    }
+  } ,[searchParams]);
+
+  useEffect(() => {
+    handleSearchRoom();
+  }, [handleSearchRoom]);
 
   useEffect(() => {
     socket.on("room:join", handleJoinRoom);
@@ -70,7 +85,7 @@ const Lobby = () => {
         </div>
         <div className="text-xl mb-8 text-pretty">
           Connect and <span className="font-bold">SayHi</span> to anyone from
-          anywhere in the world within seconds.
+          anywhere in the world. One-One video calls.
         </div>
         {user ? (
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center w-fit">
