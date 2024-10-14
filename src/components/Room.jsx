@@ -302,7 +302,7 @@ const Room = () => {
         <div
           className={`absolute transition-left transition-bottom duration-1000 ease-in-out ${
             showCallOptions ? "left-[3%] sm:left-[5%] xl:bottom-5" : "left-[-50%] xl:bottom-[-50%]"
-          } bottom-[3%] sm:bottom-[5%] xl:left-1/2 xl:-translate-x-1/2 xl:-translate-y-1/2 sm:w-full sm:max-w-fit h-full max-h-fit sm:h-auto flex flex-col sm:flex-row justify-evenly items-center rounded-lg bg-gray-800 px-2`}
+          } bottom-[3%] sm:bottom-[5%] xl:left-1/2 xl:-translate-x-1/2 xl:-translate-y-1/2 sm:w-full sm:max-w-fit h-fit max-h-fit sm:h-auto flex flex-col sm:flex-row justify-evenly items-center rounded-lg bg-gray-800 px-2`}
         >
           {!isCallAccepted && (
             <button
@@ -323,7 +323,7 @@ const Room = () => {
 
           {remoteStream && isCallAccepted && (
             <button
-            onClick={handleShareScreen}
+            onClick={handleScreenShare}
             className="rounded-full mt-2 sm:mt-0 flex justify-center items-center aspect-square w-10 sm:w-12"
           >
             <img
