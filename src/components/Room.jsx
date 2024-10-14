@@ -146,23 +146,22 @@ const Room = () => {
   // SCREEN SHARE
   const handleScreenShare = useCallback(() => {
     alert("Not implemented yet");
-    return;
     
-    if (mystream) {
-      navigator.mediaDevices
-        .getDisplayMedia({ cursor: true })
-        .then((stream) => {
-          if (mystream) {
-            mystream.getVideoTracks()[0].stop();
-            mystream.addTrack(stream.getVideoTracks()[0]);
-            setMyStream(mystream);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [mystream]);
+    // if (mystream) {
+    //   navigator.mediaDevices
+    //     .getDisplayMedia({ cursor: true })
+    //     .then((stream) => {
+    //       if (mystream) {
+    //         mystream.getVideoTracks()[0].stop();
+    //         mystream.addTrack(stream.getVideoTracks()[0]);
+    //         setMyStream(mystream);
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // }
+  }, []);
 
   // DISCONNECT FROM CALL
   const handleDisconnect = useCallback(() => {
