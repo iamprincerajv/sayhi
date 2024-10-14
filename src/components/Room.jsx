@@ -132,6 +132,38 @@ const Room = () => {
     }
   };
 
+  // ROTATE CAMERA
+  const handleRotateCamera = useCallback(() => {
+    if (mystream) {
+      mystream.getVideoTracks()[0].getSettings().facingMode =
+        mystream.getVideoTracks()[0].getSettings().facingMode === "user"
+          ? "environment"
+          : "user";
+      setMyStream(mystream);
+    }
+  }, [mystream]);
+
+  // SCREEN SHARE
+  const handleScreenShare = useCallback(() => {
+    alert("Not implemented yet");
+    return;
+    
+    if (mystream) {
+      navigator.mediaDevices
+        .getDisplayMedia({ cursor: true })
+        .then((stream) => {
+          if (mystream) {
+            mystream.getVideoTracks()[0].stop();
+            mystream.addTrack(stream.getVideoTracks()[0]);
+            setMyStream(mystream);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [mystream]);
+
   // DISCONNECT FROM CALL
   const handleDisconnect = useCallback(() => {
     if (mystream) {
@@ -291,8 +323,8 @@ const Room = () => {
 
           {remoteStream && isCallAccepted && (
             <button
-            onClick={handleShareLink}
-            className="rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
+            onClick={handleShareScreen}
+            className="rounded-full mt-2 sm:mt-0 flex justify-center items-center aspect-square w-10 sm:w-12"
           >
             <img
               src="/screen.svg"
@@ -309,7 +341,7 @@ const Room = () => {
           {mystream && (
             <>
               <button
-                onClick={handleShareLink}
+                onClick={handleRotateCamera}
                 className="rounded-full flex justify-center items-center aspect-square w-10 sm:w-12"
               >
                 <img
